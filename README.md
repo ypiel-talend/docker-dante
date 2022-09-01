@@ -1,7 +1,65 @@
 Supported tags and respective `Dockerfile` links
 ================================================
 
+This is a fork from:
   * [`latest` (Dockerfile)](https://github.com/wernight/docker-dante/blob/master/Dockerfile) [![](https://images.microbadger.com/badges/image/wernight/dante.svg)](https://microbadger.com/images/wernight/dante "Get your own image badge on microbadger.com")
+
+To build the image:
+
+    $ cp sockd.conf.withAuthent sockd.con # to have a dante configured to only accept authenticated user
+    $ docker build .
+     ---> 7db37e99c701
+    Step 8/8 : CMD ["sockd"]
+    ---> Using cache
+    ---> 9ede6c1a16fe
+    Successfully built 9ede6c1a16fe
+
+Then execute the container:
+
+    $ docker run -d -p 1080:1080  9ede6c1a16fe
+    b7f26777bb650bd28ac09ebbbff55363d0e3c4c2a22f14a3930c436c996e7870
+
+Then test a curl call
+
+Without authentication:
+
+    $ curl --proxy socks5://localhost:1080  https://gist.githubusercontent.com/ypiel-talend/c3277c902b92a8e266d1eb3c0b0e576a/raw/956d70aa753af6cfa2a3a710a9150deff70b47f6/geologists_ok.json
+       {
+      "content":[
+         {
+            "name":"MauriceKrafft",
+            "age":35,
+            "female":false,
+            "address":{
+            "city":"Mulhouse",
+            "zipcode":68100
+         },
+         ...
+      ]
+    }
+
+With authentication:
+- The login is "peter"
+- The password is "aze123_=KLM"
+
+
+    $ curl --proxy socks5://localhost:1080  https://gist.githubusercontent.com/ypiel-talend/c3277c902b92a8e266d1eb3c0b0e576a/raw/956d70aa753af6cfa2a3a710a9150deff70b47f6/geologists_ok.json
+    curl: (7) No authentication method was acceptable. (It is quite likely that the SOCKS5 server wanted a username/password, since none was supplied to the server on this connection.)
+    
+    $ curl --proxy socks5://peter:aze123_=KLM@localhost:1080  https://gist.githubusercontent.com/ypiel-talend/c3277c902b92a8e266d1eb3c0b0e576a/raw/956d70aa753af6cfa2a3a710a9150deff70b47f6/geologists_ok.json
+       {
+      "content":[
+         {
+            "name":"MauriceKrafft",
+            "age":35,
+            "female":false,
+            "address":{
+            "city":"Mulhouse",
+            "zipcode":68100
+         },
+         ...
+      ]
+    }
 
 
 What is Dante
