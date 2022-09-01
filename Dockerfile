@@ -32,6 +32,11 @@ RUN set -x \
  && rm -rf /tmp/* \
  && apk del --purge .build-deps
 
+RUN apk add bash
+RUN apk add openssl
+
+RUN printf 'aze123_=KLM\naze123_=KLM\n' | adduser peter
+
 # Default configuration
 COPY sockd.conf /etc/
 
